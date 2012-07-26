@@ -4,7 +4,6 @@ class Issue
   # Returns the users that should be notified
   # NB: same as Issue#recipients, without the map(&:mail) at the end
   def notified_users
-    return @notified_users if defined?(@notified_users)
     notified = []
     # Author and assignee are always notified unless they have been
     # locked or don't want to be notified
@@ -22,6 +21,6 @@ class Issue
     # Remove users that can not view the issue
     notified.reject! {|user| !visible?(user)}
     # Return
-    @notified_users = notified
+    notified
   end
 end
