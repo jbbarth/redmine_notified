@@ -48,6 +48,12 @@ class NotificationTest < ActiveSupport::TestCase
     assert_equal issue, notif.notificable
   end
 
+  test "inverse associations are set correctly" do
+    [Issue, Journal, News, Comment, Message, WikiContent].each do |klass|
+      assert_equal true, klass.reflect_on_all_associations.map(&:name).include?(:notifications)
+    end
+  end
+
   #taken from test/unit/mailer_test.rb in core
   private
   def last_email

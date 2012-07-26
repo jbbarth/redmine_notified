@@ -12,6 +12,7 @@ Rails.application.paths["app/overrides"] << File.expand_path("../app/overrides",
 
 ActionDispatch::Callbacks.to_prepare do
   require_dependency 'redmine_notified/issue_patch'
+  require_dependency 'redmine_notified/notifications_association_patch'
 end
 
 Redmine::Plugin.register :redmine_notified do
