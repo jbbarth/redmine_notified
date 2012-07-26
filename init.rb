@@ -1,5 +1,6 @@
 require 'redmine'
 require 'redmine_notified/hooks'
+require 'redmine_notified/mail_notifications_subscriber'
 
 # Little hack for using the 'deface' gem in redmine:
 # - redmine plugins are not railties nor engines, so deface overrides in app/overrides/ are not detected automatically
