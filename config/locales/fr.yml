@@ -1,3 +1,4 @@
 fr:
   notified_users: "Utilisateurs notifiés"
-  x_users_will_be_notified: "%{count} utilisateurs seront notifiés"
+  x_users_will_be_notified: "~%{count} utilisateurs seront notifiés"
+  notified_users_notice: "NB: l'assigné et l'auteur seront aussi notifiés."
