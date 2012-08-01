@@ -18,8 +18,17 @@ class Issue
 
     notified += project.notified_users
     notified.uniq!
+
     # Remove users that can not view the issue
-    notified.reject! {|user| !visible?(user)}
+    # /!\ VERY SLOW: notified.reject! {|user| !visible?(user)}
+    # So we write our own, limited, version (but good enough for the majority of cases...):
+    context = self.project
+    return [] unless context.active? || context.allows_to?(:view_issues)
+    authorized_roles = Role.all.select {|role| (context.is_public? || role.member?) && role.allowed_to?(:view_issues)}
+    authorized_users = User.joins(:members => {:member_roles=>:role})
+                           .where("members.project_id" => self.project_id,
+                                  "roles.id" => authorized_roles.map(&:id))
+    notified &= authorized_users
     # Return
     notified
   end
