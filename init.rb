@@ -23,4 +23,7 @@ Redmine::Plugin.register :redmine_notified do
   requires_redmine :version_or_higher => '2.0.3'
   version '0.0.1'
   url 'https://github.com/jbbarth/redmine_notified'
+  project_module :issue_tracking do
+    permission :view_notified_users, {}
+  end
 end

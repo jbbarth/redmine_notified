@@ -1,3 +1,4 @@
+<% if User.current.allowed_to?(:view_notified_users, @project) %>
 <p class=notified>
   <label><%= l(:notified_users) %></label>
   <%= link_to_function l(:x_users_will_be_notified, :count => @issue.notified_users.count),
@@ -12,3 +13,4 @@
   </span>
   <em id=notified_users_notice class=info style="display:none;"><%= l(:notified_users_notice) %></em>
 </p>
+<% end %>
