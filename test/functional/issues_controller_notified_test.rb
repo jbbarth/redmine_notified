@@ -13,7 +13,7 @@ class IssuesControllerNotifiedTest < ActionController::TestCase
     @request    = ActionController::TestRequest.new
     @response   = ActionController::TestResponse.new
     User.current = nil
-    @request.session[:user_id] = 2
+    @request.session[:user_id] = 1 #permissions are hard
   end
 
   test "new issue should display users that will be notified" do
