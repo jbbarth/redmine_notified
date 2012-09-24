@@ -2,7 +2,7 @@
 <p class=notified>
   <label><%= l(:notified_users) %></label>
   <%= link_to_function l(:x_users_will_be_notified, :count => @issue.notified_users.count),
-                       'Element.hide(this); Element.show("notified_users"); Element.show("notified_users_notice");' %>
+                       '$("#notified_users, #notified_users_notice").toggle()' %>
   <span class=notified_users id=notified_users style="display:none">
     <% @issue.notified_users.sort.each do |user| %>
       <span class=person>
