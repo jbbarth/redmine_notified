@@ -1,5 +1,10 @@
 en:
+  notified: "Notified"
   notified_users: "Notified users"
   x_users_will_be_notified: "~%{count} users will be notified"
   notified_users_notice: "NB: assignee and author are also going to be notified."
   permission_view_notified_users: "View notified users"
+  no_notification_data: "No notification record for this event."
+  notification_subject: "Subject"
+  notification_recipients: "Recipients"
+  label_note: "Note"

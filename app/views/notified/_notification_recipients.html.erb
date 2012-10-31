@@ -1,0 +1,24 @@
+<% if notification.blank? %>
+  <div class=nodata><%= l(:no_notification_data) %></div>
+<% else %>
+
+  <h4>
+    <em><%= l(:notification_subject) %></em>
+    <%= notification.subject %>
+  </h4>
+
+  <p>
+    <em><%= l(:label_date) %></em>
+    <%= format_time(notification.created_at) %>
+  </p>
+
+  <div class="notification-recipients">
+    <em><%= l(:notification_recipients) %></em>
+    <ul>
+    <% [notification.to, notification.cc, notification.bcc].reject(&:blank?).join(', ').strip.split(/\s*,\s*/).sort_by{|a| a.downcase}.each do |recipient| %>
+      <li><%= recipient %></li>
+    <% end %>
+    </ul>
+  </div>
+
+<% end %>
