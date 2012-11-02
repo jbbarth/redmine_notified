@@ -24,6 +24,6 @@ Redmine::Plugin.register :redmine_notified do
   version '0.0.1'
   url 'https://github.com/jbbarth/redmine_notified'
   project_module :issue_tracking do
-    permission :view_notified_users, {}
+    permission :view_notified_users, { :notified => [:show] }
   end
 end
