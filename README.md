@@ -12,7 +12,7 @@ The plugin adds a link on issues:
 
 ... which opens a popup where you can see who has actually been notified at each step:
 
-![redmine_notified screenshot](http://jbbarth.com/screenshots/redmine_notified_1.png)
+![redmine_notified screenshot](http://jbbarth.com/screenshots/redmine_notified_2.png)
 
 Install
 -------
