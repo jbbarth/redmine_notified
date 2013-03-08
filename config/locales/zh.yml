@@ -1,0 +1,14 @@
+# Simplified Chinese strings go here for Rails i18n
+# Author: Steven.W
+# Based on file: en.yml
+
+zh:
+  notified: "通知"
+  notified_users: "通知用户"
+  x_users_will_be_notified: "~%{count} 位用户将被通知。"
+  notified_users_notice: "注意：处理人及作者将同时被通知到。"
+  permission_view_notified_users: "查看被通知用户"
+  no_notification_data: "当前事务无通知记录。"
+  notification_subject: "主题"
+  notification_recipients: "收件人"
+  label_note: "注解"
