@@ -1,7 +1,9 @@
 /* Notified users' box */
 .notified { /*background-color:#e6f4f6;*/
             /*taken from ".tabular .p" in core => */
-            margin:0; padding:3px 0; padding-left:180px; min-height:1.8em; clear:left; }
+            margin:0; padding:3px 0; min-height:1.8em; clear:left; }
+.new_issue .notified { padding-left:180px; }
+.edit_issue .notified label { font-weight:bold; }
 .notified > a { display:inline-block; margin:4px; }
 .notified img { position:relative; bottom:-4px; }
 .notified_users { display:inline-block; margin:2px 4px; width:100%; -webkit-columns: 160px; -moz-columns: 160px; columns: 160px; }
