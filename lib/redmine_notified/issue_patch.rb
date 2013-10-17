@@ -3,6 +3,7 @@ require_dependency 'issue'
 class Issue
   # Returns the users that should be notified
   # NB: same as Issue#recipients, without the map(&:mail) at the end
+  # NB: not included in redmine >= 2.2.0
   def notified_users
     notified = []
     # Author and assignee are always notified unless they have been
