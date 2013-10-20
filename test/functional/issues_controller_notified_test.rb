@@ -22,9 +22,9 @@ class IssuesControllerNotifiedTest < ActionController::TestCase
       assert_response :success
       assert_template 'new'
       assert_select '.notified' do
-        assert_select 'a', '~2 users will be notified'
+        assert_select 'a', '~3 users will be notified'
         assert_select '.notified_users' do
-          assert_select '.person', :count => 2
+          assert_select '.person', :count => 3
         end
       end
     end
