@@ -26,4 +26,8 @@ Redmine::Plugin.register :redmine_notified do
   project_module :issue_tracking do
     permission :view_notified_users, { :notified => [:show] }
   end
+  settings :partial => 'settings/notified_settings',
+           :default => {
+             'display_notified_users_in_forms' => '0'
+           }
 end

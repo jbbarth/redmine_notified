@@ -1,4 +1,5 @@
-<% if User.current.allowed_to?(:view_notified_users, @project) %>
+<% if User.current.allowed_to?(:view_notified_users, @project) &&
+      Setting.plugin_redmine_notified['display_notified_users_in_forms'].to_i != 0 %>
 <p class=notified>
   <label><%= l(:notified_users) %></label>
   <%= link_to_function l(:x_users_will_be_notified, :count => @issue.notified_users.count),

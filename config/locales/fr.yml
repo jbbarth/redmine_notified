@@ -8,3 +8,4 @@ fr:
   notification_subject: "Objet"
   notification_recipients: "Destinataires"
   label_note: "Note"
+  text_try_to_display_notified_users_in_forms: "Essayer d'afficher les utilisateurs qui seront notifiés dans les formulaires de demande"

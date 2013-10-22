@@ -8,3 +8,4 @@ en:
   notification_subject: "Subject"
   notification_recipients: "Recipients"
   label_note: "Note"
+  text_try_to_display_notified_users_in_forms: "Try to display users who will be notified in issue forms"

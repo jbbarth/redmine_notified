@@ -17,7 +17,7 @@ class IssuesControllerNotifiedTest < ActionController::TestCase
   end
 
   test "new issue should display users that will be notified" do
-    with_settings :default_language => "en" do
+    with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '1' } do
       get :new, :project_id => 1, :tracker_id => 1
       assert_response :success
       assert_template 'new'
@@ -31,7 +31,7 @@ class IssuesControllerNotifiedTest < ActionController::TestCase
   end
   
   test "edit issue should display users that will be notified" do
-    with_settings :default_language => "en" do
+    with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '1' } do
       get :show, :id => 1
       assert_response :success
       assert_response :success
@@ -42,6 +42,15 @@ class IssuesControllerNotifiedTest < ActionController::TestCase
           assert_select '.person', :count => 2
         end
       end
+    end
+  end
+
+  test "new issue should NOT display users that will be notified if setting says 'no'" do
+    with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '0' } do
+      get :new, :project_id => 1, :tracker_id => 1
+      assert_response :success
+      assert_template 'new'
+      assert_select '.notified', :count => 0
     end
   end
 end
