@@ -40,7 +40,7 @@ class NotificationTest < ActiveSupport::TestCase
 
   test "notification is created after mail is sent and auto-detects object" do
     issue = Issue.find(1)
-    Mailer.issue_add(issue).deliver
+    Mailer.deliver_issue_add(issue)
     mail = last_email
     notif = Notification.last
     assert_equal mail.subject, notif.subject
