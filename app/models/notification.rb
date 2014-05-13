@@ -14,7 +14,7 @@ class Notification < ActiveRecord::Base
     end
     true
   rescue NameError, ActiveRecord::RecordNotFound
-    Rails.logger.error "Plugin redmine_notified: unable to find an object for message_id=#{message_id}"
+    Rails.logger.error "Plugin redmine_notified: unable to find an object for message_id=#{message_id}" unless Rails.env.test?
     self.notificable = nil
     true
   end
