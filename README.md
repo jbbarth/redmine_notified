@@ -17,7 +17,7 @@ The plugin adds a link on issues:
 Install
 -------
 
-This plugin is compatible with Redmine 2.1.x and 2.2.x, and should be compatible with future versions.
+This plugin is compatible with Redmine 2.5.x, and should be compatible with future versions.
 
 You can first take a look at general instructions for plugins [here](http://www.redmine.org/wiki/redmine/Plugins).
 
