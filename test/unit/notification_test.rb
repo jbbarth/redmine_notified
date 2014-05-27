@@ -46,6 +46,7 @@ class NotificationTest < ActiveSupport::TestCase
     assert_equal mail.subject, notif.subject
     assert_equal mail.message_id, notif.message_id
     assert_equal issue, notif.notificable
+    assert_nil notif.mail
   end
 
   test "inverse associations are set correctly" do

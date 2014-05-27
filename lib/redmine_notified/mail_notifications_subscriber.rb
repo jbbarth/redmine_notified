@@ -3,6 +3,7 @@ ActiveSupport::Notifications.subscribe "deliver.action_mailer" do |name, start, 
   %w(from to cc bcc).each do |key|
     attrs[key] = attrs[key].join(", ") if attrs.has_key?(key)
   end
+  attrs['mail'] = nil
   begin
     new_notif = Notification.new(attrs.slice(*Notification.column_names))
     new_notif.infer_object_from_message_id
