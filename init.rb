@@ -22,6 +22,7 @@ Redmine::Plugin.register :redmine_notified do
   requires_redmine :version_or_higher => '2.5.0'
   version '0.0.1'
   url 'https://github.com/jbbarth/redmine_notified'
+  requires_redmine_plugin :redmine_base_rspec, :version_or_higher => '0.0.3' if Rails.env.test?
   project_module :issue_tracking do
     permission :view_notified_users, { :notified => [:show] }
   end

@@ -1,7 +1,11 @@
-require File.expand_path('../../test_helper', __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
+require "active_support/testing/assertions"
+require File.expand_path("../../../../../test/object_helpers", __FILE__)
 
-class NotifiedControllerTest < ActionController::TestCase
-  tests IssuesController
+describe IssuesController do
+  include ActiveSupport::Testing::Assertions
+  include ObjectHelpers
+
   fixtures :projects,
            :users,
            :roles,
@@ -15,7 +19,7 @@ class NotifiedControllerTest < ActionController::TestCase
            :workflows
 
   # tests with custom field visibility by roles (added in Redmine 2.5)
-  def setup
+  before do
     CustomField.delete_all
     Issue.delete_all
 
@@ -48,7 +52,7 @@ class NotifiedControllerTest < ActionController::TestCase
     end
   end
 
-  def test_create_should_send_emails_according_custom_fields_visibility_and_create_only_one_notification
+  it "should create should send emails according custom fields visibility and create only one notification" do
     # anonymous user is never notified
     users_to_test = @users_to_test.reject {|k,v| k.anonymous?}
 
@@ -74,23 +78,23 @@ class NotifiedControllerTest < ActionController::TestCase
 
     notifs = Notification.all
     email = ActionMailer::Base.deliveries.first
-    assert_equal email.subject, notifs.last.subject
-    assert_equal email.message_id, notifs.last.message_id
-    assert_equal Issue.last, notifs.last.notificable
+    notifs.last.subject.should == email.subject
+    notifs.last.message_id.should == email.message_id
+    notifs.last.notificable.should == Issue.last
 
-    assert_equal 3, ActionMailer::Base.deliveries.size
-    assert_equal 1, notifs.size
+    ActionMailer::Base.deliveries.size.should == 3
+    notifs.size.should == 1
 
-    assert_equal users_to_test.values.uniq.size, ActionMailer::Base.deliveries.size
+    ActionMailer::Base.deliveries.size.should == users_to_test.values.uniq.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
       mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
-      assert_equal 1, mails.size
-      assert_include user.mail, notifs.first.bcc
+      mails.size.should == 1
+      notifs.first.bcc.should include(user.mail)
     end
   end
 
-  def test_update_should_send_emails_according_custom_fields_visibility_and_create_only_one_notification
+  it "should update should send emails according custom fields visibility and create only one notification" do
     # anonymous user is never notified
     users_to_test = @users_to_test.reject {|k,v| k.anonymous?}
 
@@ -112,18 +116,18 @@ class NotifiedControllerTest < ActionController::TestCase
 
     notifs = Notification.all
     email = ActionMailer::Base.deliveries.first
-    assert_equal email.subject, notifs.last.subject
-    assert_equal email.message_id, notifs.last.message_id
-    assert_equal Journal.last, notifs.last.notificable
+    notifs.last.subject.should == email.subject
+    notifs.last.message_id.should == email.message_id
+    notifs.last.notificable.should == Journal.last
 
-    assert_equal 3, ActionMailer::Base.deliveries.size
-    assert_equal 1, notifs.size
+    ActionMailer::Base.deliveries.size.should == 3
+    notifs.size.should == 1
 
-    assert_equal users_to_test.values.uniq.size, ActionMailer::Base.deliveries.size
+    ActionMailer::Base.deliveries.size.should == users_to_test.values.uniq.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
       mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
-      assert_equal 1, mails.size
+      mails.size.should == 1
       mail = mails.first
       @fields.each_with_index do |field, i|
         if fields.include?(field)
@@ -132,7 +136,7 @@ class NotifiedControllerTest < ActionController::TestCase
           assert_mail_body_no_match "Value#{i}", mail, "User #{user.id} was able to view #{field.name} in notification"
         end
       end
-      assert_include user.mail, notifs.first.bcc
+      notifs.first.bcc.should include(user.mail)
     end
   end
 end

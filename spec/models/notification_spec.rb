@@ -1,6 +1,6 @@
-require File.expand_path('../../test_helper', __FILE__)
+require File.expand_path('../../spec_helper', __FILE__)
 
-class NotificationTest < ActiveSupport::TestCase
+describe "Notification" do
   include Redmine::I18n
   include ActionDispatch::Assertions::SelectorAssertions
   fixtures :projects, :enabled_modules, :issues, :users, :members,
@@ -10,7 +10,7 @@ class NotificationTest < ActiveSupport::TestCase
            :issue_statuses, :enumerations, :messages, :boards, :repositories,
            :wikis, :wiki_pages, :wiki_contents, :wiki_content_versions
 
-  setup do
+  before do
     ActionMailer::Base.deliveries.clear
     Setting.default_language = 'en'
     Setting.host_name = 'mydomain.foo'
@@ -19,13 +19,13 @@ class NotificationTest < ActiveSupport::TestCase
     Setting.bcc_recipients = '1'
   end
 
-  test "notification infers object from message_id before save" do
+  it "should notification infers object from message_id before save" do
     issue = Issue.find(1)
     notif = Notification.create(:message_id => "redmine.issue-1.blah")
-    assert_equal issue, notif.reload.notificable
+    notif.reload.notificable.should == issue
   end
 
-  test "notification resists even if it doesn't find a notificable from message_id" do
+  it "should notification resists even if it doesn't find a notificable from message_id" do
     #no message_id
     notif = Notification.create
     assert_nil notif.reload.notificable
@@ -38,20 +38,20 @@ class NotificationTest < ActiveSupport::TestCase
     assert_nil notif.reload.notificable
   end
 
-  test "notification is created after mail is sent and auto-detects object" do
+  it "should notification is created after mail is sent and auto-detects object" do
     issue = Issue.find(1)
     Mailer.deliver_issue_add(issue)
     mail = last_email
     notif = Notification.last
-    assert_equal mail.subject, notif.subject
-    assert_equal mail.message_id, notif.message_id
-    assert_equal issue, notif.notificable
+    notif.subject.should == mail.subject
+    notif.message_id.should == mail.message_id
+    notif.notificable.should == issue
     assert_nil notif.mail
   end
 
-  test "inverse associations are set correctly" do
+  it "should inverse associations are set correctly" do
     [Issue, Journal, News, Comment, Message, WikiContent].each do |klass|
-      assert_equal true, klass.reflect_on_all_associations.map(&:name).include?(:notifications)
+      klass.reflect_on_all_associations.map(&:name).include?(:notifications).should == true
     end
   end
 
