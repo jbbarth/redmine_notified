@@ -59,7 +59,7 @@ describe "Notification" do
   private
   def last_email
     mail = ActionMailer::Base.deliveries.last
-    assert_not_nil mail
+    refute_nil mail
     mail
   end
 end

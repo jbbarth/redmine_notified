@@ -3,7 +3,7 @@ class CreateNotifications < ActiveRecord::Migration
     create_table :notifications do |t|
       t.column :notificable_type, :string
       t.column :notificable_id, :integer
-      t.timestamps
+      t.timestamps null: false
       #common ActionMailer fields included in the instrumentation
       t.column :mailer, :string
       t.column :message_id, :string

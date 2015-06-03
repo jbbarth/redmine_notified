@@ -9,7 +9,10 @@ ActiveSupport::Notifications.subscribe "deliver.action_mailer" do |name, start, 
     new_notif.infer_object_from_message_id
     old_notif = Notification.where(:notificable_type => new_notif.notificable_type, :notificable_id => new_notif.notificable_id).first
     if old_notif
-      old_notif.bcc = (old_notif.bcc.split(', ') | new_notif.bcc.split(', ')).join(", ")
+      bcc = []
+      bcc |= old_notif.bcc.split(', ') if old_notif.bcc.present?
+      bcc |= new_notif.bcc.split(', ') if new_notif.bcc.present?
+      old_notif.bcc = bcc.join(", ")
       old_notif.save
     else
       new_notif.save

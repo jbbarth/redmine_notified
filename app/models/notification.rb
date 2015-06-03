@@ -3,6 +3,8 @@ class Notification < ActiveRecord::Base
 
   before_save :infer_object_from_message_id
 
+  attr_accessible :mailer, :message_id, :mail, :date, :subject, :to, :from, :bcc
+
   # Notification.infer_object_from_message_id(string)
   #   inverse of Mailer.message_id_for(object)
   #   deduces #notificable object, for which the #message_id has been issued
