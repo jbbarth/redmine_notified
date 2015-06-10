@@ -8,7 +8,7 @@ describe "Notification" do
            :tokens, :journals, :journal_details, :changesets,
            :trackers, :projects_trackers, :versions, :comments,
            :issue_statuses, :enumerations, :messages, :boards, :repositories,
-           :wikis, :wiki_pages, :wiki_contents, :wiki_content_versions
+           :wikis, :wiki_pages, :wiki_contents, :wiki_content_versions, :email_addresses
 
   before do
     ActionMailer::Base.deliveries.clear
@@ -22,7 +22,7 @@ describe "Notification" do
   it "should notification infers object from message_id before save" do
     issue = Issue.find(1)
     notif = Notification.create(:message_id => "redmine.issue-1.blah")
-    notif.reload.notificable.should == issue
+    expect(notif.reload.notificable).to eq issue
   end
 
   it "should notification resists even if it doesn't find a notificable from message_id" do
@@ -43,15 +43,16 @@ describe "Notification" do
     Mailer.deliver_issue_add(issue)
     mail = last_email
     notif = Notification.last
-    notif.subject.should == mail.subject
-    notif.message_id.should == mail.message_id
-    notif.notificable.should == issue
+    expect(notif.subject).to eq mail.subject
+    expect(notif.message_id).to eq mail.message_id
+    expect(notif.notificable).to eq issue
+
     assert_nil notif.mail
   end
 
   it "should inverse associations are set correctly" do
     [Issue, Journal, News, Comment, Message, WikiContent].each do |klass|
-      klass.reflect_on_all_associations.map(&:name).include?(:notifications).should == true
+      expect(klass.reflect_on_all_associations.map(&:name).include?(:notifications)).to be true
     end
   end
 

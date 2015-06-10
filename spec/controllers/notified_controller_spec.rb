@@ -16,7 +16,8 @@ describe IssuesController do
            :projects_trackers,
            :enabled_modules,
            :enumerations,
-           :workflows
+           :workflows,
+           :email_addresses
 
   # tests with custom field visibility by roles (added in Redmine 2.5)
   before do
@@ -78,19 +79,19 @@ describe IssuesController do
 
     notifs = Notification.all
     email = ActionMailer::Base.deliveries.first
-    notifs.last.subject.should == email.subject
-    notifs.last.message_id.should == email.message_id
-    notifs.last.notificable.should == Issue.last
+    expect(notifs.last.subject).to eq email.subject
+    expect(notifs.last.message_id).to eq email.message_id
+    expect(notifs.last.notificable).to eq Issue.last
 
-    ActionMailer::Base.deliveries.size.should == 3
-    notifs.size.should == 1
+    expect(ActionMailer::Base.deliveries.size).to eq 3
+    expect(notifs.size).to eq 1
 
-    ActionMailer::Base.deliveries.size.should == users_to_test.values.uniq.size
+    expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.uniq.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
       mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
-      mails.size.should == 1
-      notifs.first.bcc.should include(user.mail)
+      expect(mails.size).to eq 1
+      expect(notifs.first.bcc).to include(user.mail)
     end
   end
 
@@ -116,18 +117,18 @@ describe IssuesController do
 
     notifs = Notification.all
     email = ActionMailer::Base.deliveries.first
-    notifs.last.subject.should == email.subject
-    notifs.last.message_id.should == email.message_id
-    notifs.last.notificable.should == Journal.last
+    expect(notifs.last.subject).to eq email.subject
+    expect(notifs.last.message_id).to eq email.message_id
+    expect(notifs.last.notificable).to eq Journal.last
 
-    ActionMailer::Base.deliveries.size.should == 3
-    notifs.size.should == 1
+    expect(ActionMailer::Base.deliveries.size).to eq 3
+    expect(notifs.size).to eq 1
 
-    ActionMailer::Base.deliveries.size.should == users_to_test.values.uniq.size
+    expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.uniq.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
       mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
-      mails.size.should == 1
+      expect(mails.size).to eq 1
       mail = mails.first
       @fields.each_with_index do |field, i|
         if fields.include?(field)
@@ -136,7 +137,7 @@ describe IssuesController do
           assert_mail_body_no_match "Value#{i}", mail, "User #{user.id} was able to view #{field.name} in notification"
         end
       end
-      notifs.first.bcc.should include(user.mail)
+      expect(notifs.first.bcc).to include(user.mail)
     end
   end
 end
