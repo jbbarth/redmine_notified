@@ -28,14 +28,14 @@ describe "Notification" do
   it "should notification resists even if it doesn't find a notificable from message_id" do
     #no message_id
     notif = Notification.create
-    assert_nil notif.reload.notificable
+    expect(notif.reload.notificable).to be_nil
     #bad class name
     notif = Notification.create(:message_id => "redmine.issuez-1.blah")
-    assert_nil notif.reload.notificable
+    expect(notif.reload.notificable).to be_nil
     #bad id
     id = Issue.maximum(:id) || 0
     notif = Notification.create(:message_id => "redmine.issue-#{id + 1}.blah")
-    assert_nil notif.reload.notificable
+    expect(notif.reload.notificable).to be_nil
   end
 
   it "should notification is created after mail is sent and auto-detects object" do
@@ -47,7 +47,7 @@ describe "Notification" do
     expect(notif.message_id).to eq mail.message_id
     expect(notif.notificable).to eq issue
 
-    assert_nil notif.mail
+    expect(notif.mail).to be_nil
   end
 
   it "should inverse associations are set correctly" do
