@@ -1,7 +1,7 @@
 ActiveSupport::Notifications.subscribe "deliver.action_mailer" do |name, start, finish, id, payload|
   attrs = payload.dup.stringify_keys
   %w(from to cc bcc).each do |key|
-    attrs[key] = attrs[key].join(", ") if attrs.has_key?(key)
+    attrs[key] = attrs[key].join(", ") if attrs.has_key?(key) && attrs[key].is_a?(Enumerable)
   end
   attrs['mail'] = nil
   begin
