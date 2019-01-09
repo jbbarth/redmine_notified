@@ -2,7 +2,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 
 describe "Notification" do
   include Redmine::I18n
-  include ActionDispatch::Assertions::SelectorAssertions
+
   fixtures :projects, :enabled_modules, :issues, :users, :members,
            :member_roles, :roles, :documents, :attachments, :news,
            :tokens, :journals, :journal_details, :changesets,

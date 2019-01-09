@@ -1,4 +1,4 @@
-class AddMissingIndicesToNotifications < ActiveRecord::Migration
+class AddMissingIndicesToNotifications < ActiveRecord::Migration[4.2]
   def self.up
     add_index :notifications, :notificable_id
     add_index :notifications, :notificable_type

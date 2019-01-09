@@ -55,7 +55,7 @@ describe IssuesController do
 
   it "should create should send emails according custom fields visibility and create only one notification" do
     # anonymous user is never notified
-    users_to_test = @users_to_test.reject {|k,v| k.anonymous?}
+    users_to_test = @users_to_test.reject {|k, v| k.anonymous?}
 
     Notification.delete_all
 
@@ -63,16 +63,16 @@ describe IssuesController do
     @request.session[:user_id] = 1
     with_settings :bcc_recipients => '1' do
       assert_difference 'Issue.count' do
-        post :create,
-             :project_id => 1,
-             :issue => {
-                 :tracker_id => 1,
-                 :status_id => 1,
-                 :subject => 'New issue',
-                 :priority_id => 5,
-                 :custom_field_values => {@field1.id.to_s => 'Value0', @field2.id.to_s => 'Value1', @field3.id.to_s => 'Value2'},
-                 :watcher_user_ids => users_to_test.keys.map(&:id)
-             }
+        post :create, params: {
+            :project_id => 1,
+            :issue => {
+                :tracker_id => 1,
+                :status_id => 1,
+                :subject => 'New issue',
+                :priority_id => 5,
+                :custom_field_values => {@field1.id.to_s => 'Value0', @field2.id.to_s => 'Value1', @field3.id.to_s => 'Value2'},
+                :watcher_user_ids => users_to_test.keys.map(&:id)
+            }}
         assert_response 302
       end
     end
@@ -97,7 +97,7 @@ describe IssuesController do
 
   it "should update should send emails according custom fields visibility and create only one notification" do
     # anonymous user is never notified
-    users_to_test = @users_to_test.reject {|k,v| k.anonymous?}
+    users_to_test = @users_to_test.reject {|k, v| k.anonymous?}
 
     Notification.delete_all
 
@@ -107,11 +107,11 @@ describe IssuesController do
     ActionMailer::Base.deliveries.clear
     @request.session[:user_id] = 1
     with_settings :bcc_recipients => '1' do
-      put :update,
+      put :update, params: {
           :id => @issue.id,
           :issue => {
               :custom_field_values => {@field1.id.to_s => 'NewValue0', @field2.id.to_s => 'NewValue1', @field3.id.to_s => 'NewValue2'}
-          }
+          }}
       assert_response 302
     end
 

@@ -1,7 +1,7 @@
 class NotifiedController < ApplicationController
   unloadable
-  before_filter :find_issue
-  before_filter :authorize
+  before_action :find_issue
+  before_action :authorize
 
   def show
     @issue_notification = Notification.where("notificable_type = 'Issue' AND notificable_id = ?", @issue.id).first

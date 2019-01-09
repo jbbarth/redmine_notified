@@ -1,9 +1,11 @@
 class Notification < ActiveRecord::Base
+  include Redmine::SafeAttributes
+
   belongs_to :notificable, :polymorphic => true
 
   before_save :infer_object_from_message_id
 
-  attr_accessible :mailer, :message_id, :mail, :date, :subject, :to, :from, :bcc
+  safe_attributes :mailer, :message_id, :mail, :date, :subject, :to, :from, :bcc
 
   # Notification.infer_object_from_message_id(string)
   #   inverse of Mailer.message_id_for(object)

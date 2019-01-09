@@ -1,7 +1,7 @@
 require 'redmine'
 require 'redmine_notified/hooks'
 
-ActionDispatch::Callbacks.to_prepare do
+ActiveSupport::Reloader.to_prepare do
   require_dependency 'redmine_notified/mail_notifications_subscriber'
   require_dependency 'redmine_notified/notifications_association_patch'
 end
