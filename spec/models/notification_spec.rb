@@ -41,10 +41,12 @@ describe "Notification" do
   it "should notification is created after mail is sent and auto-detects object" do
     issue = Issue.find(1)
     Mailer.deliver_issue_add(issue)
-    mail = last_email
+    mails = ActionMailer::Base.deliveries
+    last_mail = mails.last
+    expect(ActionMailer::Base.deliveries.size).to eq 2
     notif = Notification.last
-    expect(notif.subject).to eq mail.subject
-    expect(notif.message_id).to eq mail.message_id
+    expect(notif.subject).to eq last_mail.subject
+    expect(mails.map(&:message_id)).to include notif.message_id
     expect(notif.notificable).to eq issue
 
     expect(notif.mail).to be_nil

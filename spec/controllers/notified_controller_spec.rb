@@ -83,10 +83,10 @@ describe IssuesController do
     expect(notifs.last.message_id).to eq email.message_id
     expect(notifs.last.notificable).to eq Issue.last
 
-    expect(ActionMailer::Base.deliveries.size).to eq 3
+    expect(ActionMailer::Base.deliveries.size).to eq 4
     expect(notifs.size).to eq 1
 
-    expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.uniq.size
+    expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
       mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
@@ -121,10 +121,10 @@ describe IssuesController do
     expect(notifs.last.message_id).to eq email.message_id
     expect(notifs.last.notificable).to eq Journal.last
 
-    expect(ActionMailer::Base.deliveries.size).to eq 3
+    expect(ActionMailer::Base.deliveries.size).to eq 4
     expect(notifs.size).to eq 1
 
-    expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.uniq.size
+    expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
       mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
