@@ -9,7 +9,7 @@
 .notified_users { display:inline-block; margin:2px 4px; width:100%; -webkit-columns: 160px; -moz-columns: 160px; columns: 160px; }
 .notified_users .person { display:block; }
 .icon-notified { background-image: url(../images/email_to_friend.png); }
-.contextual.is-notified { margin:0 5px; }
+.contextual.is-notified { margin:-4px 5px 0 5px; }
 .modal .is-notified { font-size:12px; }
 .modal .is-notified h4 { font-size:13px; }
 .modal .is-notified em { color:#888; font-style:normal; display:inline-block; margin:0 4px; }
