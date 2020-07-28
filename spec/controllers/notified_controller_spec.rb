@@ -41,7 +41,7 @@ describe IssuesController do
     User.add_to_project(@user_with_role_on_other_project, Project.find(2), Role.find(3))
 
     @users_to_test = {
-        User.find(1) => [@field1, @field2, @field3],
+        User.find(2) => [@field1, @field2, @field3],
         User.find(3) => [@field1, @field2],
         @user_with_role_on_other_project => [@field1], # should see field1 only on Project 1
         User.generate! => [@field1],
@@ -53,9 +53,9 @@ describe IssuesController do
     end
   end
 
-  it "should create should send emails according custom fields visibility and create only one notification" do
+  it "creates a new issue and sends emails according to custom fields visibility and create only one notification" do
     # anonymous user is never notified
-    users_to_test = @users_to_test.reject {|k, v| k.anonymous?}
+    users_to_test = @users_to_test.reject { |k, v| k.anonymous? }
 
     Notification.delete_all
 
@@ -89,15 +89,15 @@ describe IssuesController do
     expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
-      mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
+      mails = ActionMailer::Base.deliveries.select { |m| m.bcc.include? user.mail }
       expect(mails.size).to eq 1
       expect(notifs.first.bcc).to include(user.mail)
     end
   end
 
-  it "should update should send emails according custom fields visibility and create only one notification" do
+  it "updates an issue and sends emails according to custom fields visibility and create only one notification" do
     # anonymous user is never notified
-    users_to_test = @users_to_test.reject {|k, v| k.anonymous?}
+    users_to_test = @users_to_test.reject { |k, v| k.anonymous? }
 
     Notification.delete_all
 
@@ -127,7 +127,7 @@ describe IssuesController do
     expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
-      mails = ActionMailer::Base.deliveries.select {|m| m.bcc.include? user.mail}
+      mails = ActionMailer::Base.deliveries.select { |m| m.bcc.include? user.mail }
       expect(mails.size).to eq 1
       mail = mails.first
       @fields.each_with_index do |field, i|

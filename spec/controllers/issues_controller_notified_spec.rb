@@ -1,7 +1,9 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe IssuesController do
+describe IssuesController, type: :controller do
+
   render_views
+
   fixtures :projects, :users, :roles, :members, :member_roles, :issues, :issue_statuses, :versions,
            :trackers, :projects_trackers, :issue_categories, :enabled_modules, :enumerations, :attachments,
            :workflows, :custom_fields, :custom_values, :custom_fields_projects, :custom_fields_trackers,
@@ -10,10 +12,6 @@ describe IssuesController do
   include Redmine::I18n
 
   before do
-    @controller = IssuesController.new
-    @request = ActionDispatch::TestRequest.create
-    @response = ActionDispatch::TestResponse.new
-    User.current = nil
     @request.session[:user_id] = 1 #permissions are hard
   end
 
@@ -34,7 +32,6 @@ describe IssuesController do
   it "should edit issue should display users that will be notified" do
     with_settings :default_language => "en", :plugin_redmine_notified => {'display_notified_users_in_forms' => '1'} do
       get :show, params: {:id => 1}
-      expect(response).to be_successful
       expect(response).to be_successful
       assert_template 'show'
       assert_select '.notified' do
