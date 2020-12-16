@@ -1,0 +1,11 @@
+pt:
+  notified: "Notificou"
+  notified_users: "Notificou os usuários"
+  x_users_will_be_notified: "~%{count} os usuários serão notificados"
+  notified_users_notice: "NB: autor e responsáveis serão notificados tambem."
+  permission_view_notified_users: "Visualizar usuários notificados"
+  no_notification_data: "Nenhum registro de notificação para este evento."
+  notification_subject: "Assunto"
+  notification_recipients: "Destinatários"
+  label_note: "Notas"
+  text_try_to_display_notified_users_in_forms: "Tente exibir os usuários que serão notificados em formulários de problemas"
