@@ -4,17 +4,25 @@
   <h3 class=title><%= l(:label_issue) %> #<%= @issue.id %> / <%= l(:notified_users) %></h3>
 
   <p>
-  <select id="notification-switcher">
-    <option value="notification-issue"><%= l(:label_issue) %> #<%= @issue.id %></h3>
-  <% @journal_notifications.each do |notification| %>
-    <option value="notification-journal-<%= notification.id %>">&nbsp; <%= l(:label_note) %> #<%= @journal_ids.index(notification.notificable_id) + 1 %></div>
-  <% end %>
-  </select>
+    <select id="notification-switcher">
+      <% @issue_notifications.each do |issue_notification| %>
+        <option value="notification-issue-<%= issue_notification.id %>">
+          <%= l(:label_issue) %> #<%= @issue.id %>
+        </option>
+      <% end %>
+      <% @journal_notifications.each do |notification| %>
+        <option value="notification-journal-<%= notification.id %>">
+          <%= l(:label_note) %> #<%= @journal_ids.index(notification.notificable_id) + 1 %>
+        </option>
+      <% end %>
+    </select>
   </p>
 
-  <div id="notification-issue" class="notification">
-    <%= render :partial => 'notification_recipients', :locals => { :notification => @issue_notification } %>
-  </div>
+  <% @issue_notifications.each do |issue_notification| %>
+    <div id="notification-issue-<%= issue_notification.id %>" class="notification">
+      <%= render :partial => 'notification_recipients', :locals => { :notification => issue_notification } %>
+    </div>
+  <% end %>
 
   <% @journal_notifications.each do |notification| %>
     <div id="notification-journal-<%= notification.id %>" class="notification" style="display:none">
@@ -23,12 +31,12 @@
   <% end %>
 
   <script>
-    $(function() {
-      $("#notification-switcher").change(function() {
-        $(".modal .notification").hide();
-        $(".modal #"+$(this).val()).show()
+      $(document).ready(function () {
+          $("#notification-switcher").change(function () {
+              $(".modal .notification").hide()
+              $(".modal #" + $(this).val()).show()
+          })
       })
-    })
   </script>
 <% end %>
 
