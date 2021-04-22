@@ -4,4 +4,4 @@ $('#ajax-modal').addClass('is-notified')
 
 // First init
 $(".modal .notification").hide()
-$(".modal #notification-issue-<%= @issue_notifications.first.id %>").show()
+$(".modal #notification-issue-<%= @issue_notifications.first.try(:id) %>").show()
