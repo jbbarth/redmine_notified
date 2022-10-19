@@ -22,4 +22,11 @@ class Notification < ActiveRecord::Base
     self.notificable = nil
     true
   end
+
+  scope :re_sent_last_notifications_issue, (lambda do |issue_id|
+    ids = Issue.find(issue_id).journals.map(&:id)
+    ids << issue_id
+    ids.any? ? where(:notificable_id => ids) : none
+  end)
+
 end
