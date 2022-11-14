@@ -7,7 +7,7 @@ describe IssuesController, type: :controller do
   fixtures :projects, :users, :roles, :members, :member_roles, :issues, :issue_statuses, :versions,
            :trackers, :projects_trackers, :issue_categories, :enabled_modules, :enumerations, :attachments,
            :workflows, :custom_fields, :custom_values, :custom_fields_projects, :custom_fields_trackers,
-           :time_entries, :journals, :journal_details, :queries, :repositories, :changesets, :email_addresses
+           :time_entries, :journals, :journal_details, :queries, :repositories, :changesets
 
   include Redmine::I18n
 
@@ -51,80 +51,4 @@ describe IssuesController, type: :controller do
       assert_select '.notified', :count => 0
     end
   end
-
-  it "Should not show link (Resend last notification) without permission" do
-    User.current = User.find(3)
-    @request.session[:user_id] = 3
-    get :show, params: { :id => 1 }
-
-    expect(response.body).not_to have_content('Resend last notification')
-  end
-
-  it "Should show link (Resend last notification) with permission" do
-    User.current = User.find(3)
-    @request.session[:user_id] = 3
-    Role.find(2).add_permission!(:resend_last_notification)
-
-    get :show, params: { :id => 1 }
-
-    expect(response.body).to have_content('Resend last notification')
-  end
-
-  it "Should resend the last notifications for journal (new issue)" do
-    post :create, params: {:project_id => 1, :issue => {:tracker_id => 3,
-                                            :subject => 'This is the test_new issue',
-                                            :description => 'This is the description',
-                                            :priority_id => 5,
-                                            :assigned_to => 2,
-                                            :watcher_user_ids => [1,2]
-                          }}
-
-    issue_test = Issue.last
-
-    emails_count = ActionMailer::Base.deliveries.size
-    ActionMailer::Base.deliveries.clear
-
-    expect do
-      post :resend_last_notification, params: { :issue_id => issue_test.id }
-    end.to change { Journal.count }.by(1)
-    .and change { ActionMailer::Base.deliveries.size }.by(emails_count)
-
-    expect(response).to be_successful
-
-    last_notif = Notification.last
-    email = ActionMailer::Base.deliveries.last
-
-    expect(Journal.last.journalized_type).to eq "Notification"
-    expect(Journal.last.journalized_id).to eq last_notif.id
-    expect(Journal.last.notes).to eq email.subject
-    expect(Journal.last.notes).to eq last_notif.subject
-
-  end
-
-  it "Should resend the last notifications for journal (edit issue)" do
-    put :update, params: {:id => 1, :issue => { :notes => 'note test'} }
-
-    emails_count = ActionMailer::Base.deliveries.size
-    ActionMailer::Base.deliveries.clear
-
-    expect do
-      post :resend_last_notification, params: { :issue_id => 1 }
-    end.to change { Journal.count }.by(1)
-    .and change { ActionMailer::Base.deliveries.size }.by(emails_count)
-
-    last_notif = Notification.last
-    email = ActionMailer::Base.deliveries.last
-
-    expect(response).to be_successful
-    expect(Journal.last.journalized_type).to eq "Notification"
-    expect(Journal.last.journalized_id).to eq last_notif.id
-    expect(Journal.last.notes).to eq email.subject
-    expect(Journal.last.notes).to eq last_notif.subject
-
-    get :show, params: { :id => 1 }
-
-    expect(response.body).to have_css("div[class='issue-mail-notification-container']")
-    expect(response.body).to have_css("h4[class='note-header']", text: "Resend last notification to the addresses of people notified ago ")
-  end
-
 end

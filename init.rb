@@ -4,10 +4,6 @@ require 'redmine_notified/hooks'
 ActiveSupport::Reloader.to_prepare do
   require_dependency 'redmine_notified/mail_notifications_subscriber'
   require_dependency 'redmine_notified/notifications_association_patch'
-  require_dependency 'redmine_notified/issues_controller_patch'
-  require_dependency 'redmine_notified/issues_helper_patch'
-  require_dependency 'redmine_notified/journals_helper_patch'
-  require_dependency 'redmine_notified/journals_patch'
 end
 
 Redmine::Plugin.register :redmine_notified do
@@ -22,11 +18,9 @@ Redmine::Plugin.register :redmine_notified do
   requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
   project_module :issue_tracking do
     permission :view_notified_users, { :notified => [:show] }
-    permission :resend_last_notification, { :issues => [:resend_last_notification] }
   end
-
   settings :partial => 'settings/notified_settings',
-            :default => {
-              'display_notified_users_in_forms' => '0'
-            }
+           :default => {
+             'display_notified_users_in_forms' => '0'
+           }
 end
