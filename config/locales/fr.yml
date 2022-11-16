@@ -11,7 +11,6 @@ fr:
   text_try_to_display_notified_users_in_forms: "Essayer d'afficher les utilisateurs qui seront notifiés dans les formulaires de demande"
   permission_resend_last_notification: "Ré-émettre la dernière notification"
   label_resend_last_notification: "Ré-émettre la dernière notification"
-  label_automatic_mail_sent_to_people_notified_ago: "Mail automatique envoyé aux adresses des personnes notifiées il y a "
   label_see_the_content_of_the_email: "Voir le contenu du mail"
   label_hide_the_content_of_the_email: "Masquer le contenu du mail"
-  label_resend_last_notifications_to_people_notified_ago: "Ré-émettre la dernière notification aux adresses des personnes notifiées il y a "
+  label_resend_last_notifications_to_people_notified_ago: "Notification par mail envoyée à nouveau il y a "

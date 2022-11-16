@@ -11,7 +11,6 @@ en:
   text_try_to_display_notified_users_in_forms: "Try to display users who will be notified in issue forms"
   permission_resend_last_notification: "Resend last notification"
   label_resend_last_notification: "Resend last notification"
-  label_automatic_mail_sent_to_people_notified_ago: "Automatic mail sent to the addresses of people notified ago "
   label_see_the_content_of_the_email: "See the content of the email"
   label_hide_the_content_of_the_email: "Hide the content of the email"
-  label_resend_last_notifications_to_people_notified_ago: "Resend last notification to the addresses of people notified ago "
+  label_resend_last_notifications_to_people_notified_ago: "Notification manually re-sent"
