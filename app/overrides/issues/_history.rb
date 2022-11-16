@@ -25,7 +25,7 @@ Deface::Override.new :virtual_path  => 'issues/tabs/_history',
 <% if journal.persisted? && journal.journalized_type != "Notification" %>
   <%= authoring journal.created_on, journal.user, :label => :label_updated_time_by %>
 <% else %>
-    <%= l(:label_resend_last_notifications_to_people_notified_ago) %>
+    <%= l(:label_last_notifications_resent) %>
     <%= time_tag(journal.created_on).html_safe %>
     <% mail_id = "journal-"+journal.object_id.to_s+"-notes" %>
     <% link_id = "link-to-mail-notification-"+journal.object_id.to_s %>
@@ -36,9 +36,9 @@ Deface::Override.new :virtual_path  => 'issues/tabs/_history',
     blockEventPropagation(event);
     $('#'+mail_id).toggleClass('hidden');
     if($('#'+mail_id).is(':visible')) {
-      $('#'+link_id).text('<% l(:label_hide_the_content_of_the_email) %>')
+      $('#'+link_id).text('<%= l(:label_hide_the_content_of_the_email) %>')
     }else{
-      $('#'+link_id).text('<% l(:label_see_the_content_of_the_email) %>')
+      $('#'+link_id).text('<%= l(:label_see_the_content_of_the_email) %>')
     };
     return false;
   }
