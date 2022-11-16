@@ -52,7 +52,7 @@ describe IssuesController, type: :controller do
     end
   end
 
-  it "Should not show link (Resend last notification) without permission" do
+  it "does not show link (Resend last notification) without permission" do
     User.current = User.find(3)
     @request.session[:user_id] = 3
     get :show, params: { :id => 1 }
@@ -60,7 +60,7 @@ describe IssuesController, type: :controller do
     expect(response.body).not_to have_content('Resend last notification')
   end
 
-  it "Should show link (Resend last notification) with permission" do
+  it "shows link (Resend last notification) with permission" do
     User.current = User.find(3)
     @request.session[:user_id] = 3
     Role.find(2).add_permission!(:resend_last_notification)
@@ -70,7 +70,7 @@ describe IssuesController, type: :controller do
     expect(response.body).to have_content('Resend last notification')
   end
 
-  it "Should resend the last notifications for journal (new issue)" do
+  it "re-sends the last notifications for journal (new issue)" do
     post :create, params: {:project_id => 1, :issue => {:tracker_id => 3,
                                             :subject => 'This is the test_new issue',
                                             :description => 'This is the description',
@@ -81,13 +81,13 @@ describe IssuesController, type: :controller do
 
     issue_test = Issue.last
 
-    emails_count = ActionMailer::Base.deliveries.size
+    expect(ActionMailer::Base.deliveries.size).to eq 3
     ActionMailer::Base.deliveries.clear
 
     expect do
       post :resend_last_notification, params: { :issue_id => issue_test.id }
     end.to change { Journal.count }.by(1)
-    .and change { ActionMailer::Base.deliveries.size }.by(emails_count)
+    .and change { ActionMailer::Base.deliveries.size }.by(3)
 
     expect(response).to redirect_to("/issues/#{issue_test.id}")
 
@@ -101,16 +101,16 @@ describe IssuesController, type: :controller do
 
   end
 
-  it "Should resend the last notifications for journal (edit issue)" do
+  it "re-sends the last notifications for journal (edit issue)" do
     put :update, params: {:id => 1, :issue => { :notes => 'note test'} }
 
-    emails_count = ActionMailer::Base.deliveries.size
+    expect(ActionMailer::Base.deliveries.size).to eq 2
     ActionMailer::Base.deliveries.clear
 
     expect do
       post :resend_last_notification, params: { :issue_id => 1 }
     end.to change { Journal.count }.by(1)
-    .and change { ActionMailer::Base.deliveries.size }.by(emails_count)
+    .and change { ActionMailer::Base.deliveries.size }.by(2)
 
     last_notif = Notification.last
     email = ActionMailer::Base.deliveries.last
