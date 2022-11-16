@@ -37,7 +37,8 @@ class IssuesController
           Journal.set_callback(:commit, :after, :send_notification)
         end
       end
-
-    end
+      
+      redirect_to issue_path(params[:issue_id])
+    end    
   end
 end

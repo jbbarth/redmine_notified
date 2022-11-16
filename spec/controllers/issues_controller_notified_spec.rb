@@ -89,7 +89,7 @@ describe IssuesController, type: :controller do
     end.to change { Journal.count }.by(1)
     .and change { ActionMailer::Base.deliveries.size }.by(emails_count)
 
-    expect(response).to be_successful
+    expect(response).to redirect_to("/issues/#{issue_test.id}")
 
     last_notif = Notification.last
     email = ActionMailer::Base.deliveries.last
@@ -115,7 +115,7 @@ describe IssuesController, type: :controller do
     last_notif = Notification.last
     email = ActionMailer::Base.deliveries.last
 
-    expect(response).to be_successful
+    expect(response).to redirect_to("/issues/1")
     expect(Journal.last.journalized_type).to eq "Notification"
     expect(Journal.last.journalized_id).to eq last_notif.id
     expect(Journal.last.notes).to eq email.subject
