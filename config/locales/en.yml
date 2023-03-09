@@ -13,4 +13,4 @@ en:
   label_resend_last_notification: "Resend last notification"
   label_see_the_content_of_the_email: "See the content of the email"
   label_hide_the_content_of_the_email: "Hide the content of the email"
-  label_last_notifications_resent: "Notification manually re-sent"
+  label_Notification_resent: "Notification manually re-sent by %{user} ago "

@@ -1,7 +1,7 @@
 require_dependency 'journals_helper'
 
 module JournalsHelper
-  def render_notifications_history(issue, journal, options = {})
+  def render_Notification_in_issue_history(issue, journal, options = {})
     content = ''
     content << content_tag('div', simple_format("Destinataires : #{journal.journalized.bcc}"), :class => 'content') if journal.journalized.present? && journal.journalized_type == "Notification"
     links = []
