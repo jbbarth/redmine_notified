@@ -18,3 +18,21 @@
 .notifications_history.hidden{
     display: none !important;
 }
+.issue-mail-resent-notification-container {
+    margin:8px 0; padding:0 0 0 20px;
+    background-image: url(../images/email.png); background-repeat:no-repeat; background-position:0 top;
+}
+.issue-mail-resent-notification-container .journal.has-notes{
+    margin:0; padding:6px; box-shadow:2px 2px 4px #ccc; font-size:12px;
+    color:#333 !important; border:1px solid #ccc;
+    background-color:#f7f7f9;
+    background-image: linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
+    background-image: -o-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
+    background-image: -moz-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
+    background-image: -webkit-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
+    background-image: -ms-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.1, #f7f7f9), color-stop(0.4, #f2f2f5));
+}
+.issue-mail-resent-notification-container .journal.has-notes .content {
+   font-style: oblique;
+}

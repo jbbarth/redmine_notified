@@ -12,12 +12,12 @@ describe IssuesController, type: :controller do
   include Redmine::I18n
 
   before do
-    @request.session[:user_id] = 1 #permissions are hard
+    @request.session[:user_id] = 1 # permissions are hard
   end
 
   it "should new issue should display users that will be notified" do
-    with_settings :default_language => "en", :plugin_redmine_notified => {'display_notified_users_in_forms' => '1'} do
-      get :new, params: {:project_id => 1, :tracker_id => 1}
+    with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '1' } do
+      get :new, params: { :project_id => 1, :tracker_id => 1 }
       expect(response).to be_successful
       assert_template 'new'
       assert_select '.notified' do
@@ -30,8 +30,8 @@ describe IssuesController, type: :controller do
   end
 
   it "should edit issue should display users that will be notified" do
-    with_settings :default_language => "en", :plugin_redmine_notified => {'display_notified_users_in_forms' => '1'} do
-      get :show, params: {:id => 1}
+    with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '1' } do
+      get :show, params: { :id => 1 }
       expect(response).to be_successful
       assert_template 'show'
       assert_select '.notified' do
@@ -44,8 +44,8 @@ describe IssuesController, type: :controller do
   end
 
   it "should new issue should NOT display users that will be notified if setting says 'no'" do
-    with_settings :default_language => "en", :plugin_redmine_notified => {'display_notified_users_in_forms' => '0'} do
-      get :new, params: {:project_id => 1, :tracker_id => 1}
+    with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '0' } do
+      get :new, params: { :project_id => 1, :tracker_id => 1 }
       expect(response).to be_successful
       assert_template 'new'
       assert_select '.notified', :count => 0
@@ -71,23 +71,24 @@ describe IssuesController, type: :controller do
   end
 
   it "re-sends the last notifications for journal (new issue)" do
-    post :create, params: {:project_id => 1, :issue => {:tracker_id => 3,
-                                            :subject => 'This is the test_new issue',
-                                            :description => 'This is the description',
-                                            :priority_id => 5,
-                                            :assigned_to => 2,
-                                            :watcher_user_ids => [1,2]
-                          }}
+    post :create, params: { :project_id => 1, :issue => { :tracker_id => 3,
+                                                          :subject => 'This is the test_new issue',
+                                                          :description => 'This is the description',
+                                                          :priority_id => 5,
+                                                          :assigned_to => 2,
+                                                          :watcher_user_ids => [1, 2]
+    } }
 
     issue_test = Issue.last
 
+    # ActionMailer::Base.deliveries.size 2 ,because of watcher_user_ids => [1,2]
     expect(ActionMailer::Base.deliveries.size).to eq 2
     ActionMailer::Base.deliveries.clear
 
     expect do
       post :resend_last_notification, params: { :issue_id => issue_test.id }
     end.to change { Journal.count }.by(1)
-    .and change { ActionMailer::Base.deliveries.size }.by(2)
+                                   .and change { ActionMailer::Base.deliveries.size }.by(2)
 
     expect(response).to redirect_to("/issues/#{issue_test.id}")
 
@@ -102,7 +103,8 @@ describe IssuesController, type: :controller do
   end
 
   it "re-sends the last notifications for journal (edit issue)" do
-    put :update, params: {:id => 1, :issue => { :notes => 'note test'} }
+    ActionMailer::Base.deliveries.clear
+    put :update, params: { :id => 1, :issue => { :notes => 'note test' } }
 
     expect(ActionMailer::Base.deliveries.size).to eq 2
     ActionMailer::Base.deliveries.clear
@@ -110,7 +112,7 @@ describe IssuesController, type: :controller do
     expect do
       post :resend_last_notification, params: { :issue_id => 1 }
     end.to change { Journal.count }.by(1)
-    .and change { ActionMailer::Base.deliveries.size }.by(2)
+                                   .and change { ActionMailer::Base.deliveries.size }.by(2)
 
     last_notif = Notification.last
     email = ActionMailer::Base.deliveries.last
@@ -123,8 +125,8 @@ describe IssuesController, type: :controller do
 
     get :show, params: { :id => 1 }
 
-    expect(response.body).to have_css("div[class='issue-mail-notification-container']")
-    expect(response.body).to have_css("h4[class='note-header']", text: "Notification manually re-sent")
+    expect(response.body).to have_css("div[class='issue-mail-resent-notification-container']")
+    expect(response.body).to have_css("h4[class='note-header']", text: "Notification manually re-sent by")
   end
 
 end
