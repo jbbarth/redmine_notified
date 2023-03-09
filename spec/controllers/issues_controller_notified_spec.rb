@@ -80,14 +80,14 @@ describe IssuesController, type: :controller do
                           }}
 
     issue_test = Issue.last
-
-    expect(ActionMailer::Base.deliveries.size).to eq 3
+    # ActionMailer::Base.deliveries.size 2 ,because of watcher_user_ids => [1,2]
+    expect(ActionMailer::Base.deliveries.size).to eq 2
     ActionMailer::Base.deliveries.clear
 
     expect do
       post :resend_last_notification, params: { :issue_id => issue_test.id }
     end.to change { Journal.count }.by(1)
-    .and change { ActionMailer::Base.deliveries.size }.by(3)
+    .and change { ActionMailer::Base.deliveries.size }.by(2)
 
     expect(response).to redirect_to("/issues/#{issue_test.id}")
 
@@ -102,6 +102,7 @@ describe IssuesController, type: :controller do
   end
 
   it "re-sends the last notifications for journal (edit issue)" do
+    ActionMailer::Base.deliveries.clear
     put :update, params: {:id => 1, :issue => { :notes => 'note test'} }
 
     expect(ActionMailer::Base.deliveries.size).to eq 2
@@ -123,8 +124,8 @@ describe IssuesController, type: :controller do
 
     get :show, params: { :id => 1 }
 
-    expect(response.body).to have_css("div[class='issue-mail-notification-container']")
-    expect(response.body).to have_css("h4[class='note-header']", text: "Resend last notification to the addresses of people notified ago ")
+    expect(response.body).to have_css("div[class='issue-mail-resent-notification-container']")
+    expect(response.body).to have_css("h4[class='note-header']", text: "Notification manually re-sent by")
   end
 
 end
