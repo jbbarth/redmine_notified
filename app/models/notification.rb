@@ -24,6 +24,7 @@ class Notification < ActiveRecord::Base
   end
 
   scope :re_sent_last_notifications_issue, (lambda do |issue_id|
+    # Journalized ids can be journal_ids or issue_ids...
     ids = Issue.find(issue_id).journals.map(&:id)
     ids << issue_id
     ids.any? ? where(:notificable_id => ids) : none

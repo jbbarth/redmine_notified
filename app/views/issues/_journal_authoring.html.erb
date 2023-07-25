@@ -1,0 +1,23 @@
+<% if journal.journalized_type == "Issue" %>
+  <%= authoring journal.created_on, journal.user, :label => :label_updated_time_by %>
+<% else %>
+  <% label_text = "label_#{journal.journalized_type}_resent" %>
+  <%= l(label_text, user: link_to_user(journal.user)).html_safe %>
+  <%= time_tag(journal.created_on).html_safe %>
+  <% mail_id = "journal-" + journal.object_id.to_s + "-notes" %>
+  <% link_id = "link-to-mail-notification-" + journal.object_id.to_s %>
+  <%= content_tag(:span) { ('(' + content_tag(:a, l(:label_show_details), :href => "#", id: link_id, :onclick => "toggle_mail_details(event, '" + mail_id + "','" + link_id + "')") + ')').html_safe } %>
+<% end %>
+
+<script type="text/javascript">
+    var toggle_mail_details = function (event, mail_id, link_id) {
+        blockEventPropagation(event)
+        $('#' + mail_id).toggleClass('hidden')
+        if ($('#' + mail_id).is(':visible')) {
+            $('#' + link_id).text('<%= l(:label_hide_details) %>')
+        } else {
+            $('#' + link_id).text('<%= l(:label_show_details) %>')
+        }
+        return false
+    }
+</script>

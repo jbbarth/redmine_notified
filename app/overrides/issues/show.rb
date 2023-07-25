@@ -8,7 +8,6 @@ Deface::Override.new :virtual_path  => 'issues/show',
                      :insert_before  => 'h2',
                      :text          => <<EOS
 <%
-
   @journals = @journals + re_sent_notifications_journals
 
   @journals.sort_by!(&:created_on)

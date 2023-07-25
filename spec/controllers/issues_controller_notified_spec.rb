@@ -15,7 +15,7 @@ describe IssuesController, type: :controller do
     @request.session[:user_id] = 1 # permissions are hard
   end
 
-  it "should new issue should display users that will be notified" do
+  it "displays users that will be notified when creating the issue" do
     with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '1' } do
       get :new, params: { :project_id => 1, :tracker_id => 1 }
       expect(response).to be_successful
@@ -29,7 +29,7 @@ describe IssuesController, type: :controller do
     end
   end
 
-  it "should edit issue should display users that will be notified" do
+  it "displays users that will be notified when editing the issue" do
     with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '1' } do
       get :show, params: { :id => 1 }
       expect(response).to be_successful
@@ -43,7 +43,7 @@ describe IssuesController, type: :controller do
     end
   end
 
-  it "should new issue should NOT display users that will be notified if setting says 'no'" do
+  it "does NOT display users that will be notified if setting says 'no'" do
     with_settings :default_language => "en", :plugin_redmine_notified => { 'display_notified_users_in_forms' => '0' } do
       get :new, params: { :project_id => 1, :tracker_id => 1 }
       expect(response).to be_successful
@@ -52,81 +52,81 @@ describe IssuesController, type: :controller do
     end
   end
 
-  it "does not show link (Resend last notification) without permission" do
-    User.current = User.find(3)
-    @request.session[:user_id] = 3
-    get :show, params: { :id => 1 }
+  describe "Resend last notification" do
 
-    expect(response.body).not_to have_content('Resend last notification')
-  end
+    before do
+      User.current = User.find(3)
+      @request.session[:user_id] = 3
+    end
 
-  it "shows link (Resend last notification) with permission" do
-    User.current = User.find(3)
-    @request.session[:user_id] = 3
-    Role.find(2).add_permission!(:resend_last_notification)
+    it "does not show link (Resend last notification) without permission" do
+      get :show, params: { :id => 1 }
+      expect(response.body).not_to have_content('Resend last notification')
+    end
 
-    get :show, params: { :id => 1 }
+    it "shows link (Resend last notification) with permission" do
+      Role.find(2).add_permission!(:resend_last_notification)
+      get :show, params: { :id => 1 }
+      expect(response.body).to have_content('Resend last notification')
+    end
 
-    expect(response.body).to have_content('Resend last notification')
-  end
+    it "re-sends the last notification when issue is a new one" do
+      ActionMailer::Base.deliveries.clear
 
-  it "re-sends the last notifications for journal (new issue)" do
-    post :create, params: { :project_id => 1, :issue => { :tracker_id => 3,
-                                                          :subject => 'This is the test_new issue',
-                                                          :description => 'This is the description',
-                                                          :priority_id => 5,
-                                                          :assigned_to => 2,
-                                                          :watcher_user_ids => [1, 2]
-    } }
+      post :create, params: { :project_id => 1, :issue => { :tracker_id => 3,
+                                                            :subject => 'This is the test_new issue',
+                                                            :description => 'This is the description',
+                                                            :priority_id => 5,
+                                                            :assigned_to => 2,
+                                                            :watcher_user_ids => [1, 2] } }
 
-    issue_test = Issue.last
+      # ActionMailer::Base.deliveries.size 2, because of watcher_user_ids => [1,2]
+      puts "ActionMailer::Base.deliveries.map(&:to): #{ActionMailer::Base.deliveries.map(&:bcc)}"
+      expect(ActionMailer::Base.deliveries.size).to eq 2
+      ActionMailer::Base.deliveries.clear
 
-    # ActionMailer::Base.deliveries.size 2 ,because of watcher_user_ids => [1,2]
-    expect(ActionMailer::Base.deliveries.size).to eq 2
-    ActionMailer::Base.deliveries.clear
+      issue_test = Issue.last
+      expect do
+        post :resend_last_notification, params: { :issue_id => issue_test.id }
+      end.to change { Journal.count }.by(1)
+                                     .and change { ActionMailer::Base.deliveries.size }.by(2)
 
-    expect do
-      post :resend_last_notification, params: { :issue_id => issue_test.id }
-    end.to change { Journal.count }.by(1)
-                                   .and change { ActionMailer::Base.deliveries.size }.by(2)
+      expect(response).to redirect_to("/issues/#{issue_test.id}")
 
-    expect(response).to redirect_to("/issues/#{issue_test.id}")
+      last_notif = Notification.last
+      email = ActionMailer::Base.deliveries.last
 
-    last_notif = Notification.last
-    email = ActionMailer::Base.deliveries.last
+      expect(Journal.last.journalized_type).to eq "Notification"
+      expect(Journal.last.journalized_id).to eq last_notif.id
+      expect(Journal.last.notes).to eq email.subject
+      expect(Journal.last.notes).to eq last_notif.subject
+    end
 
-    expect(Journal.last.journalized_type).to eq "Notification"
-    expect(Journal.last.journalized_id).to eq last_notif.id
-    expect(Journal.last.notes).to eq email.subject
-    expect(Journal.last.notes).to eq last_notif.subject
+    it "re-sends the last notification when the issue already have edits)" do
+      ActionMailer::Base.deliveries.clear
+      put :update, params: { :id => 1, :issue => { :notes => 'note test' } }
 
-  end
+      expect(ActionMailer::Base.deliveries.size).to eq 2
+      ActionMailer::Base.deliveries.clear
 
-  it "re-sends the last notifications for journal (edit issue)" do
-    ActionMailer::Base.deliveries.clear
-    put :update, params: { :id => 1, :issue => { :notes => 'note test' } }
+      expect do
+        post :resend_last_notification, params: { :issue_id => 1 }
+      end.to change { Journal.count }.by(1)
+                                     .and change { ActionMailer::Base.deliveries.size }.by(2)
 
-    expect(ActionMailer::Base.deliveries.size).to eq 2
-    ActionMailer::Base.deliveries.clear
+      last_notif = Notification.last
+      email = ActionMailer::Base.deliveries.last
 
-    expect do
-      post :resend_last_notification, params: { :issue_id => 1 }
-    end.to change { Journal.count }.by(1)
-                                   .and change { ActionMailer::Base.deliveries.size }.by(2)
+      expect(response).to redirect_to("/issues/1")
+      expect(Journal.last.journalized_type).to eq "Notification"
+      expect(Journal.last.journalized_id).to eq last_notif.id
+      expect(Journal.last.notes).to eq email.subject
+      expect(Journal.last.notes).to eq last_notif.subject
 
-    last_notif = Notification.last
-    email = ActionMailer::Base.deliveries.last
+      get :show, params: { :id => 1 }
 
-    expect(response).to redirect_to("/issues/1")
-    expect(Journal.last.journalized_type).to eq "Notification"
-    expect(Journal.last.journalized_id).to eq last_notif.id
-    expect(Journal.last.notes).to eq email.subject
-    expect(Journal.last.notes).to eq last_notif.subject
-
-    get :show, params: { :id => 1 }
-
-    expect(response.body).to have_css("div[class='issue-mail-resent-notification-container']")
-    expect(response.body).to have_css("h4[class='note-header']", text: "Notification manually re-sent by")
+      expect(response.body).to have_css("h4[class='note-header']", text: "Notification manually re-sent by")
+    end
   end
 
 end

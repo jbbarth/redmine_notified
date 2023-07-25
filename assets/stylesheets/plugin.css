@@ -3,7 +3,7 @@
             /*taken from ".tabular .p" in core => */
             margin:0; padding:3px 0; min-height:1.8em; clear:left; }
 .new_issue .notified { padding-left:180px; }
-.edit_issue .notified label { font-weight:bold; }
+.edit_issue .notified label { font-weight:bold; }
 .notified > a { display:inline-block; margin:4px; }
 .notified img { position:relative; bottom:-4px; }
 .notified_users { display:inline-block; margin:2px 4px; width:100%; -webkit-columns: 160px; -moz-columns: 160px; columns: 160px; }
@@ -17,22 +17,4 @@
 .modal .notification-recipients { max-height:300px; overflow:auto; }
 .notifications_history.hidden{
     display: none !important;
-}
-.issue-mail-resent-notification-container {
-    margin:8px 0; padding:0 0 0 20px;
-    background-image: url(../images/email.png); background-repeat:no-repeat; background-position:0 top;
-}
-.issue-mail-resent-notification-container .journal.has-notes{
-    margin:0; padding:6px; box-shadow:2px 2px 4px #ccc; font-size:12px;
-    color:#333 !important; border:1px solid #ccc;
-    background-color:#f7f7f9;
-    background-image: linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
-    background-image: -o-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
-    background-image: -moz-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
-    background-image: -webkit-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
-    background-image: -ms-linear-gradient(bottom, #f7f7f9 10%, #f2f2f5 40%);
-    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.1, #f7f7f9), color-stop(0.4, #f2f2f5));
-}
-.issue-mail-resent-notification-container .journal.has-notes .content {
-   font-style: oblique;
 }
