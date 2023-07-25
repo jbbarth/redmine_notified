@@ -4,15 +4,10 @@ module RedmineNotified
     module IssuesHelper
 
     def re_sent_notifications_journals
-      result = []
-
-      ids = Notification.re_sent_last_notifications_issue(@issue.id).map(&:id)
-      @journaled_notifications = Journal.where(journalized_type: "Notification",  journalized_id: ids)
-      @journaled_notifications.each do |journal|
-        result  << journal
-      end
-      result
+      notification_ids = Notification.re_sent_last_notifications_issue(@issue.id).map(&:id)
+      Journal.where(journalized_type: "Notification",  journalized_id: notification_ids)
     end
+
   end
 end
 

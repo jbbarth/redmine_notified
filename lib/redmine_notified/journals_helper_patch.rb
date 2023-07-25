@@ -1,7 +1,7 @@
 require_dependency 'journals_helper'
 
 module JournalsHelper
-  def render_Notification_in_issue_history(issue, journal, options = {})
+  def render_notification_in_issue_history(issue, journal, options = {})
     content = ''
     content << content_tag('div', simple_format("Destinataires : #{journal.journalized.bcc}"), :class => 'content') if journal.journalized.present? && journal.journalized_type == "Notification"
     links = []
@@ -15,7 +15,7 @@ module JournalsHelper
       ) if options[:reply_links]
     end
     content << content_tag('div', links.join(' ').html_safe, :class => 'contextual') unless links.empty?
-    content << content_tag('div', simple_format(journal.notes), :class => 'content')
+    content << content_tag('div', "#{l(:field_subject)}: #{simple_format(journal.notes)}".html_safe, :class => 'content')
     css_classes = "wiki notifications_history hidden"
     content_tag('div',
                 content.html_safe,
