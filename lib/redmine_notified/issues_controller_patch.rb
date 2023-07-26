@@ -16,14 +16,14 @@ class IssuesController
 
       if journal.present?
         # Edition
-        notifs = Notification.where(notificabled: journal)
+        notifs = Notification.where(notificable: journal)
         notifs.each do |notif|
           Mailer.deliver_issue_edit(journal)
           create_journal_without_callbacks(notif)
         end
       else
         # Creation
-        notifs = Notification.where(notificabled: issue)
+        notifs = Notification.where(notificable: issue)
         notifs.each do |notif|
           Mailer.deliver_issue_add(issue)
           create_journal_without_callbacks(notif)
