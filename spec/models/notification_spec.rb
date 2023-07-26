@@ -3,7 +3,7 @@ require File.expand_path('../../spec_helper', __FILE__)
 describe "Notification" do
   include Redmine::I18n
 
-  fixtures :projects, :enabled_modules, :issues, :users, :members,
+  fixtures :projects, :enabled_modules, :issues, :users, :members, :user_preferences,
            :member_roles, :roles, :documents, :attachments, :news,
            :tokens, :journals, :journal_details, :changesets,
            :trackers, :projects_trackers, :versions, :comments,
@@ -17,6 +17,11 @@ describe "Notification" do
     Setting.protocol = 'http'
     Setting.plain_text_mail = '0'
     Setting.bcc_recipients = '1'
+
+    # Ensure user2 is notified of changes
+    user_2 = User.find(2)
+    user_2.pref.no_self_notified = false
+    user_2.pref.save!
   end
 
   it "should notification infers object from message_id before save" do
@@ -43,7 +48,7 @@ describe "Notification" do
     Mailer.deliver_issue_add(issue)
     mails = ActionMailer::Base.deliveries
     last_mail = mails.last
-    expect(ActionMailer::Base.deliveries.size).to eq 1
+    expect(ActionMailer::Base.deliveries.size).to eq 2
     notif = Notification.last
     expect(notif.subject).to eq last_mail.subject
     expect(mails.map(&:message_id)).to include notif.message_id
