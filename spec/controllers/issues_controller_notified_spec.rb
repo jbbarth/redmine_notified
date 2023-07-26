@@ -83,7 +83,7 @@ describe IssuesController, type: :controller do
                                                             :subject => 'This is the test_new issue',
                                                             :description => 'This is the description',
                                                             :priority_id => 5,
-                                                            :assigned_to => 2} }
+                                                            :assigned_to => 2 } }
 
       expect(ActionMailer::Base.deliveries.size).to eq 2
       ActionMailer::Base.deliveries.clear
@@ -127,7 +127,6 @@ describe IssuesController, type: :controller do
       expect(last_journal.notes).to eq last_notif.subject
 
       get :show, params: { :id => 1 }
-
       expect(response.body).to have_css("h4[class='note-header']", text: "Notification manually re-sent by")
     end
 
@@ -145,6 +144,23 @@ describe IssuesController, type: :controller do
       expect(ActionMailer::Base.deliveries).to be_empty
 
       expect(response).to have_http_status(:forbidden) # 403
+    end
+
+    it "resends the last public notes, not the privates ones" do
+      Journal.create!(:journalized => Issue.find(1), :notes => 'note test visible by everyone', :private_notes => false)
+      Journal.create!(:journalized => Issue.find(1), :notes => 'this is a private note', :private_notes => true)
+
+      ActionMailer::Base.deliveries.clear
+      expect do
+        post :resend_last_notification, params: { :issue_id => 1 }
+      end.to change { Journal.count }.by(1)
+                                     .and change { ActionMailer::Base.deliveries.size }.by(2)
+
+      expect(response).to redirect_to("/issues/1")
+
+      resent_email = ActionMailer::Base.deliveries.last.body.parts.first.body.raw_source
+      expect(resent_email).to_not include('this is a private note')
+      expect(resent_email).to include('note test visible by everyone')
     end
   end
 

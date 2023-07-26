@@ -9,8 +9,8 @@ class IssuesController
       issue = Issue.find(params[:issue_id])
       return render_403 unless User.current.allowed_to?(:resend_last_notification, issue.project)
 
-      # find the last journal for this issue else it is a new issue
-      journal = Journal.where(journalized: issue).last
+      # find the last public journal for this issue else it is a new issue
+      journal = Journal.where(journalized: issue, private_notes: false).last
 
       # if (ActiveJob::QueueAdapters::AsyncAdapter max_threads > 1) perhaps notifs.count > 1 else notifs.count = 1
 
