@@ -1,4 +1,4 @@
-module NotificationsAssociationPatch
+module RedmineNotified::NotificationsAssociationPatch
   def self.included(base)
     base.class_eval do
       has_many :notifications, :as => :notificable
@@ -8,5 +8,5 @@ end
 
 %w(issue journal news comment message wiki_content).each do |klass|
   require_dependency klass
-  klass.camelize.constantize.send(:include, NotificationsAssociationPatch)
+  klass.camelize.constantize.send(:include, RedmineNotified::NotificationsAssociationPatch)
 end

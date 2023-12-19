@@ -1,10 +1,5 @@
 require 'redmine'
-require 'redmine_notified/hooks'
-
-ActiveSupport::Reloader.to_prepare do
-  require_dependency 'redmine_notified/mail_notifications_subscriber'
-  require_dependency 'redmine_notified/notifications_association_patch'
-end
+require_relative 'lib/redmine_notified/hooks'
 
 Redmine::Plugin.register :redmine_notified do
   name 'Redmine Notified plugin'
