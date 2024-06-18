@@ -81,15 +81,13 @@ describe IssuesController do
     expect(notifs.last.subject).to eq email.subject
     expect(notifs.last.message_id).to eq email.message_id
     expect(notifs.last.notificable).to eq Issue.last
-
-    expect(ActionMailer::Base.deliveries.size).to eq 5
     expect(notifs.size).to eq 1
 
     expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     ActionMailer::Base.deliveries.each do |mail|
-      expect(mail.to.size).to eq 1
-      notified_address = mail.to.first
+      expect(mail.to.size + (mail.bcc&.size || 0)).to eq 1
+      notified_address = mail.to.first || mail.bcc.first
       expect(users_to_test.keys.map(&:mail)).to include(notified_address)
     end
   end
@@ -101,7 +99,7 @@ describe IssuesController do
     Notification.delete_all
 
     users_to_test.keys.each do |user|
-      Watcher.create!(:user => user, :watchable => @issue)
+      Watcher.find_or_create_by!(:user => user, :watchable => @issue)
     end
     ActionMailer::Base.deliveries.clear
     @request.session[:user_id] = 1
@@ -117,14 +115,12 @@ describe IssuesController do
     expect(notifs.last.subject).to eq email.subject
     expect(notifs.last.message_id).to eq email.message_id
     expect(notifs.last.notificable).to eq Journal.last
-
-    expect(ActionMailer::Base.deliveries.size).to eq 5
     expect(notifs.size).to eq 1
 
     expect(ActionMailer::Base.deliveries.size).to eq users_to_test.values.size
     # tests that each user receives 1 email with the custom fields he is allowed to see only
     users_to_test.each do |user, fields|
-      mails = ActionMailer::Base.deliveries.select { |m| m.to.include? user.mail }
+      mails = ActionMailer::Base.deliveries.select { |m| m.to.include?(user.mail) || m.bcc&.include?(user.mail) }
       expect(mails.size).to eq 1
       mail = mails.first
       @fields.each_with_index do |field, i|
