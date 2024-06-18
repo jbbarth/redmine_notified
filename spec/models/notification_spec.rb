@@ -16,7 +16,6 @@ describe "Notification" do
     Setting.host_name = 'mydomain.foo'
     Setting.protocol = 'http'
     Setting.plain_text_mail = '0'
-    Setting.bcc_recipients = '1'
   end
 
   it "should notification infers object from message_id before save" do
@@ -26,13 +25,13 @@ describe "Notification" do
   end
 
   it "should notification resists even if it doesn't find a notificable from message_id" do
-    #no message_id
+    # no message_id
     notif = Notification.create
     expect(notif.reload.notificable).to be_nil
-    #bad class name
+    # bad class name
     notif = Notification.create(:message_id => "redmine.issuez-1.blah")
     expect(notif.reload.notificable).to be_nil
-    #bad id
+    # bad id
     id = Issue.maximum(:id) || 0
     notif = Notification.create(:message_id => "redmine.issue-#{id + 1}.blah")
     expect(notif.reload.notificable).to be_nil
@@ -40,10 +39,11 @@ describe "Notification" do
 
   it "creates a notification after sending email and auto-detects object" do
     issue = Issue.find(1)
-    Mailer.deliver_issue_add(issue)
+    expect {
+      Mailer.deliver_issue_add(issue)
+    }.to change(ActionMailer::Base.deliveries, :count)
     mails = ActionMailer::Base.deliveries
     last_mail = mails.last
-    expect(ActionMailer::Base.deliveries.size).to eq 1
     notif = Notification.last
     expect(notif.subject).to eq last_mail.subject
     expect(mails.map(&:message_id)).to include notif.message_id
@@ -58,8 +58,10 @@ describe "Notification" do
     end
   end
 
-  #taken from test/unit/mailer_test.rb in core
+  # taken from test/unit/mailer_test.rb in core
+
   private
+
   def last_email
     mail = ActionMailer::Base.deliveries.last
     refute_nil mail
