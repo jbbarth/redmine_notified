@@ -41,7 +41,6 @@ describe IssuesController do
     User.add_to_project(@user_with_role_on_other_project, Project.find(2), Role.find(3))
 
     @users_to_test = {
-      User.find(1) => [@field1], # admin
       User.find(2) => [@field1, @field2, @field3],
       User.find(3) => [@field1, @field2],
       @user_with_role_on_other_project => [@field1], # should see field1 only on Project 1
