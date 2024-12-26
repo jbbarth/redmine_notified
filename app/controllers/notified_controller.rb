@@ -1,5 +1,5 @@
 class NotifiedController < ApplicationController
-  unloadable
+
   before_action :find_issue
   before_action :authorize
 
